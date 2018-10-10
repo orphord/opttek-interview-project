@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
+import com.opttek.orford.logistics.dao.FileDataAccessor;
 
 
 public class LogisticsController {
@@ -25,6 +26,7 @@ public class LogisticsController {
 
 	private Integer sumOfCallables(int numTasks) throws InterruptedException, ExecutionException {
 		log.info("SumOfCallables method called with number : " + numTasks);
+		this.loadData();
 
 		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
@@ -43,6 +45,13 @@ public class LogisticsController {
 		}
 
 		return Integer.valueOf(sum);
+	}
+
+	private void loadData() {
+		FileDataAccessor dataAccessor = FileDataAccessor.getInstance();
+		dataAccessor.getNodeData();
+		dataAccessor.getTransitionMatrix();
+		
 	}
 	
 }

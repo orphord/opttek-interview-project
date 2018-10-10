@@ -2,7 +2,6 @@ package com.opttek.orford.logistics.dao;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ public class FileDataAccessorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		fileAccessor = new FileDataAccessor();
+		fileAccessor = FileDataAccessor.getInstance();
 	}
 
 	@Test

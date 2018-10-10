@@ -24,7 +24,17 @@ public class FileDataAccessor {
 	private final String COST_SPLIT_DELIM = ":";
 	private final String TRANSITION_SPLIT_DELIM = "->";
 
-
+	private static FileDataAccessor instance;
+	
+	public static FileDataAccessor getInstance() {
+		if(instance == null) {
+			instance = new FileDataAccessor();
+		}
+		
+		return instance;
+	}
+	
+	private FileDataAccessor() {}
 	/**
 	 * Method to get the node data from a data file.  This is not going to be doing any data validation
 	 * or error handling.  Normally I do that, but for this purpose it seems like overkill.  The format
