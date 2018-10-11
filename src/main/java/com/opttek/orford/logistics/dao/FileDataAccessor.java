@@ -13,14 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.model.Node;
+import com.opttek.orford.logistics.model.NodeSequence;
 import com.opttek.orford.logistics.model.NodeTransition;
+import com.opttek.orford.logistics.model.NodeTransitionMatrix;
 import com.opttek.orford.logistics.service.NodeService;
-import com.opttek.orford.logistics.service.NodeTransitionService;
 
 public class FileDataAccessor {
 	private static final Logger log = LoggerFactory.getLogger(FileDataAccessor.class);
 	private final String NODE_DATA_FILE_NAME = "/Node.data";
-	private final String TRANSITION_DATA_FILE_NAME = "/NodeTransition.data";
+	private final String TRANSITION_DATA_FILE_NAME = "/NodeTransitionMatrix.data";
+	private final String SEQUENCE_DATA_FILE_NAME = "/Sequence.data";
 	private final String COST_SPLIT_DELIM = ":";
 	private final String TRANSITION_SPLIT_DELIM = "->";
 
@@ -61,7 +63,7 @@ public class FileDataAccessor {
 				nodeService.addNode(tempNode);
 			}
 		} catch (FileNotFoundException ex) {
-			log.error("File " + TRANSITION_DATA_FILE_NAME + " not found.");
+			log.error("File " + NODE_DATA_FILE_NAME + " not found.");
 			ex.printStackTrace();
 		} catch (IOException ex) {
 			log.error("Error getting next line from file.");
@@ -90,7 +92,7 @@ public class FileDataAccessor {
 			BufferedReader buf = new BufferedReader(new InputStreamReader(dataFileStream));
 			String nextLine;
 			NodeService nodeService = NodeService.getInstance();
-			NodeTransitionService transitionService = NodeTransitionService.getInstance();
+			NodeTransitionMatrix transitionService = NodeTransitionMatrix.getInstance();
 			
 			while( (nextLine = buf.readLine()) != null) {
 				// Get data from file line and parse into NodeTransition information
@@ -118,6 +120,42 @@ public class FileDataAccessor {
 			log.error("Error getting next line from file.");
 			ex.printStackTrace();
 		}
+
+	}
+
+
+	/**
+	 * Method to get the Node Sequence data from a data file.  This is not going to be doing any data validation
+	 * or error handling.  Normally I do that, but for this purpose it seems like overkill.  The format
+	 * of the NodeTransition information in the data file is to be each line with a node name equivalent to the node names in the
+	 * Node.data and NodeTransitionMatrix.data files.  The **key** thing for this file is the order the values are
+	 * presented in.
+	 * 
+	 * IMPORTANT NOTE: This function depends on the nodes referenced herein having already been created as well as the NodeTransitionMatrix 
+	 */
+	public NodeSequence getInitialSequenceData() {
+		log.info("getSequenceData() function called.");
+		NodeSequence initialSequence = new NodeSequence();
+		NodeService nodeService = NodeService.getInstance();
+
+		try {
+			InputStream dataFileStream = getClass().getResourceAsStream(SEQUENCE_DATA_FILE_NAME);
+
+			BufferedReader buf = new BufferedReader(new InputStreamReader(dataFileStream));
+			String nextLine;
+			while( (nextLine = buf.readLine()) != null) {
+				Node tempNode = nodeService.getNodeByName(nextLine);
+				initialSequence.addNode(tempNode);
+			}
+		} catch (FileNotFoundException ex) {
+			log.error("File " + SEQUENCE_DATA_FILE_NAME + " not found.");
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			log.error("Error getting next line from file.");
+			ex.printStackTrace();
+		}
+		
+		return initialSequence;
 
 	}
 

@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
 import com.opttek.orford.logistics.dao.FileDataAccessor;
+import com.opttek.orford.logistics.model.NodeSequence;
 
 
 public class LogisticsController {
 	private static final Logger log = LoggerFactory.getLogger(LogisticsController.class);
-	
+	private NodeSequence initialSequence;
+
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		LogisticsController controller = new LogisticsController();
 		Integer sum = controller.sumOfCallables(5); 
@@ -38,6 +40,9 @@ public class LogisticsController {
 		for(SwapAndCompareCallable task : callableList) {
 			answers.add(executor.submit(task));
 		}
+		
+		// End executor
+		executor.shutdown();
 
 		int sum = 0;
 		for(Future<Integer> ans : answers) {
@@ -51,6 +56,7 @@ public class LogisticsController {
 		FileDataAccessor dataAccessor = FileDataAccessor.getInstance();
 		dataAccessor.getNodeData();
 		dataAccessor.getTransitionMatrix();
+		initialSequence = dataAccessor.getInitialSequenceData();
 		
 	}
 	
