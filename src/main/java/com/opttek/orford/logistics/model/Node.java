@@ -57,12 +57,13 @@ public class Node {
 		return this.getName().equals(c.getName()) && this.getProductionTime().equals(c.getProductionTime());
 
 	}
-	
+
+
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("Node {\n");
-		buf.append("/tName: " + this.getName() + ",\n");
-		buf.append("/tproductionTime: " + this.getProductionTime() + "\n");
+		buf.append("\tName: " + this.getName() + ",\n");
+		buf.append("\tproductionTime: " + this.getProductionTime() + "\n");
 		buf.append("}\n");
 
 		return buf.toString();
