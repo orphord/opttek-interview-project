@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opttek.orford.logistics.model.NodeTransitionMatrix;
 import com.opttek.orford.logistics.service.NodeService;
-import com.opttek.orford.logistics.service.NodeTransitionService;
 
 public class FileDataAccessorTest {
 	private static final Logger log = LoggerFactory.getLogger(FileDataAccessorTest.class);
@@ -33,8 +33,8 @@ public class FileDataAccessorTest {
 	public void testGetTransitionMatrix() {
 		log.info("Test Node Transition data retrieval.");
 		fileAccessor.getTransitionMatrix();
-		NodeTransitionService txnService = NodeTransitionService.getInstance();
-		assertTrue(txnService.getNodeTransitionByFromName("A") != null);
+		NodeTransitionMatrix txnService = NodeTransitionMatrix.getInstance();
+		assertTrue(txnService.getNodeTransitionByFromNameAndToName("A", "B") != null);
 	}
 
 }
