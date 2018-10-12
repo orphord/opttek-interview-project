@@ -5,20 +5,26 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SwapAndCompareCallable implements Callable<Integer> {
-	private static final Logger log = LoggerFactory.getLogger(SwapAndCompareCallable.class);
+import com.opttek.orford.logistics.model.NodeSequence;
+import com.opttek.orford.logistics.service.NodeTransitionService;
 
-	private Integer a;
-	private Integer b;
-	
-	public SwapAndCompareCallable(Integer _a, Integer _b) {
-		log.info("Constructing SwapAndCompareCallable with a: " + _a + " and b: " + _b);
-		a = _a;
-		b = _b;
+public class SwapAndCompareCallable implements Callable<NodeSequence> {
+	private static final Logger log = LoggerFactory.getLogger(SwapAndCompareCallable.class);
+	private NodeTransitionService transitionService = NodeTransitionService.getInstance();
+	private NodeSequence operationSequence;
+	private Integer indexOfInterest;
+
+
+	public SwapAndCompareCallable(NodeSequence _seq, Integer _indexToChange) {
+		log.info("Constructing SwapAndCompareCallable for index: " + _indexToChange);
+		operationSequence = _seq.cloneNodeSequence();
+		indexOfInterest = _indexToChange;
+
 	}
 
-	public Integer call() throws Exception {
-		return Integer.valueOf(a.intValue() + b.intValue());
+	public NodeSequence call() throws Exception {
+		operationSequence.doSwap(indexOfInterest);
+		return operationSequence;
 
 	}
 

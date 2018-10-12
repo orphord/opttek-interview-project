@@ -13,50 +13,32 @@ import org.slf4j.LoggerFactory;
 import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
 import com.opttek.orford.logistics.dao.FileDataAccessor;
 import com.opttek.orford.logistics.model.NodeSequence;
+import com.opttek.orford.logistics.service.OptimizerService;
 
 
 public class LogisticsController {
 	private static final Logger log = LoggerFactory.getLogger(LogisticsController.class);
-	private NodeSequence initialSequence;
+	private NodeSequence baselineSequence;
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		LogisticsController controller = new LogisticsController();
-		Integer sum = controller.sumOfCallables(5); 
-		log.info("The sum of all callables is: " + sum.intValue());
+		controller.doOptimization();
 
 	}
 
-	private Integer sumOfCallables(int numTasks) throws InterruptedException, ExecutionException {
-		log.info("SumOfCallables method called with number : " + numTasks);
+	private void doOptimization() throws InterruptedException, ExecutionException {
+
 		this.loadData();
+		OptimizerService optService = new OptimizerService();
+		NodeSequence optimal = optService.doOptimization(baselineSequence);
 
-		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
-		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
-		for(int i = 0; i < numTasks; i++) {
-			callableList.add(new SwapAndCompareCallable(i, i + 1));
-		}
-		
-		List<Future<Integer>> answers = new ArrayList<Future<Integer>>();
-		for(SwapAndCompareCallable task : callableList) {
-			answers.add(executor.submit(task));
-		}
-		
-		// End executor
-		executor.shutdown();
-
-		int sum = 0;
-		for(Future<Integer> ans : answers) {
-			sum += ans.get().intValue();
-		}
-
-		return Integer.valueOf(sum);
 	}
 
 	private void loadData() {
 		FileDataAccessor dataAccessor = FileDataAccessor.getInstance();
 		dataAccessor.getNodeData();
 		dataAccessor.getTransitionMatrix();
-		initialSequence = dataAccessor.getInitialSequenceData();
+		baselineSequence = dataAccessor.getInitialSequenceData();
 		
 	}
 	
