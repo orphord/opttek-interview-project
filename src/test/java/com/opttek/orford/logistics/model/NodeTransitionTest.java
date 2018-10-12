@@ -15,25 +15,20 @@ public class NodeTransitionTest {
 	private NodeTransition bToA;
 	private Node a;
 	private Node b;
-	private Integer initialAtoBTransitionCost;
+	private Integer initialAtoBTransitionCost = Integer.valueOf(10);
+	private String aName = "A";
+	private String bName = "B";
+	private Integer aProdTime = Integer.valueOf(19);
+	private Integer bProdTime = Integer.valueOf(8);
 
 	@Before
 	public void setUp() throws Exception {
-		a = new Node();
-		a.setName("A");
-		b = new Node();
-		b.setName("B");
+		a = new Node(aName, aProdTime);
+		b = new Node(bName, bProdTime);
 
-		initialAtoBTransitionCost = Integer.valueOf(10);
-		aToB = new NodeTransition();
-		aToB.setFromNode(a);
-		aToB.setToNode(b);
-		aToB.setTransitionCost(initialAtoBTransitionCost);
+		aToB = new NodeTransition(a, b, initialAtoBTransitionCost);
+		bToA = new NodeTransition(b, a, Integer.valueOf(7));
 
-		bToA = new NodeTransition();
-		bToA.setFromNode(b);
-		bToA.setToNode(a);
-		bToA.setTransitionCost(Integer.valueOf(8));
 	}
 
 
@@ -47,36 +42,17 @@ public class NodeTransitionTest {
 		assertEquals("A to B fromNode should be equal to A: ", a, aToB.getFromNode());
 	}
 
-	@Test
-	public void testSetFromNode() {
-		aToB.setFromNode(b); // this is setting teh from node of aToB to B for this test
-		assertNotEquals("A to B fromNode should NOT be equal to A: ", a, aToB.getFromNode());
-		assertEquals("A to B fromNode should be equal to B: ", b, aToB.getFromNode());
-	}
 
 	@Test
 	public void testGetToNode() {
 		assertEquals("B to A toNode should be equal to A: ", a, bToA.getToNode());
 	}
 
-	@Test
-	public void testSetToNode() {
-		aToB.setToNode(a); // this is setting the to node of aToB to A for this test
-		assertNotEquals("A to B toNode should NOT be equal to B: ", b, aToB.getToNode());
-		assertEquals("A to B toNode should be equal to A: ", a, aToB.getToNode());
-	}
 
 	@Test
 	public void testGetTransitionCost() {
 		assertEquals("A to B transition cost should be " + this.initialAtoBTransitionCost, this.initialAtoBTransitionCost, aToB.getTransitionCost());
 	}
 
-	@Test
-	public void testSetTransitionCost() {
-		Integer newTransitionCost = Integer.valueOf(12);
-		aToB.setTransitionCost(newTransitionCost);
-		assertNotEquals("New transition cost should NOT be old one", this.initialAtoBTransitionCost, aToB.getTransitionCost());
-		assertEquals("New transition cost should be set in aToB", newTransitionCost, aToB.getTransitionCost());
-	}
 
 }

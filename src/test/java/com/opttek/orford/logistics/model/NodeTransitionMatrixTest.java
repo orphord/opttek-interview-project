@@ -12,22 +12,16 @@ public class NodeTransitionMatrixTest {
 	private static final Logger log = LoggerFactory.getLogger(NodeTransitionMatrixTest.class);
 
 	private static NodeTransitionMatrix matrix;
-	private Node testNode1 = new Node();
-	Node testNode2 = new Node();
-	NodeTransition trans1 = new NodeTransition();
-	String node1Name = "Hal";
-	String node2Name = "Pal";
 
+	private String node1Name = "Hal";
+	private String node2Name = "Pal";
+	private Node testNode1 = new Node(node1Name, Integer.valueOf(5));
+	private Node testNode2 = new Node(node2Name, Integer.valueOf(8));
+	private NodeTransition trans1 = new NodeTransition(testNode1, testNode2, Integer.valueOf(3));
+	
 	@Before
 	public void setUp() throws Exception {
 		matrix = NodeTransitionMatrix.getInstance();
-		testNode1.setName(node1Name);
-		testNode1.setProductionTime(Integer.valueOf(5));
-		testNode2.setName(node2Name);
-		testNode2.setProductionTime(Integer.valueOf(8));
-		trans1.setFromNode(testNode1);
-		trans1.setToNode(testNode2);
-		trans1.setTransitionCost(Integer.valueOf(3));
 		matrix.addNodeTransition(trans1);
 	}
 
@@ -46,11 +40,7 @@ public class NodeTransitionMatrixTest {
 
 	@Test
 	public void testAddNodeTransition() {
-		NodeTransition trans2 = new NodeTransition();
-		trans2.setFromNode(testNode2);
-		trans2.setToNode(testNode1);
-		trans2.setTransitionCost(Integer.valueOf(21));
-	
+		NodeTransition trans2 = new NodeTransition(testNode2, testNode1, Integer.valueOf(21));	
 		matrix.addNodeTransition(trans2);
 
 		NodeTransition testTrans = matrix.getNodeTransitionByFromNameAndToName(node2Name, node1Name);

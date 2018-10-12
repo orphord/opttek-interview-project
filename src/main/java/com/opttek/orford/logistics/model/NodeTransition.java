@@ -10,6 +10,13 @@ public class NodeTransition implements Comparable<NodeTransition>{
 	private Node toNode;
 	private Integer transitionCost;
 
+	public NodeTransition(Node _from, Node _to, Integer _transCost) {
+		fromNode = _from;
+		toNode = _to;
+		transitionCost = _transCost;
+	}
+
+
 	@Override
 	public int compareTo(NodeTransition _toCompare) {
 		return this.getTransitionCost().compareTo(_toCompare.getTransitionCost());
@@ -22,12 +29,6 @@ public class NodeTransition implements Comparable<NodeTransition>{
 		return this.fromNode;
 	}
 
-	/**
-	 * @param _fromNode the fromNode to set
-	 */
-	public void setFromNode(Node _fromNode) {
-		this.fromNode = _fromNode;
-	}
 
 	/**
 	 * @return the toNode
@@ -36,12 +37,6 @@ public class NodeTransition implements Comparable<NodeTransition>{
 		return this.toNode;
 	}
 
-	/**
-	 * @param _toNode the toNode to set
-	 */
-	public void setToNode(Node _toNode) {
-		this.toNode = _toNode;
-	}
 
 	/**
 	 * @return the transitionCost
@@ -50,12 +45,6 @@ public class NodeTransition implements Comparable<NodeTransition>{
 		return this.transitionCost;
 	}
 
-	/**
-	 * @param _transitionCost the transitionCost to set
-	 */
-	public void setTransitionCost(Integer _transitionCost) {
-		this.transitionCost = _transitionCost;
-	}
 
 	@Override
 	public boolean equals(Object o) {

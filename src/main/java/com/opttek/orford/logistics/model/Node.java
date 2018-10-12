@@ -9,18 +9,19 @@ public class Node {
 	private String name;
 	private Integer productionTime;
 
+	public Node(String _name, Integer _prodTime) {
+		name = _name;
+		productionTime = _prodTime;
+	}
+
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
-	/**
-	 * @param _name the name to set
-	 */
-	public void setName(String _name) {
-		this.name = _name;
-	}
+
 
 	/**
 	 * @return the productionTime
@@ -28,13 +29,8 @@ public class Node {
 	public Integer getProductionTime() {
 		return productionTime;
 	}
-	/**
-	 * @param _productionTime the productionTime to set
-	 */
-	public void setProductionTime(Integer _productionTime) {
-		this.productionTime = _productionTime;
-	}
-	
+
+
 	@Override
 	public boolean equals(Object o) {
 		// If the object is compared with itself then return true

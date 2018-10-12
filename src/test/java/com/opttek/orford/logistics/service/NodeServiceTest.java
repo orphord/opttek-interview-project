@@ -20,9 +20,7 @@ public class NodeServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		svc = NodeService.getInstance();
-		Node one = new Node();
-		one.setName(nodeOneName);
-		one.setProductionTime(nodeOneProdTime);
+		Node one = new Node(nodeOneName, nodeOneProdTime);
 		svc.addNode(one);
 	}
 
@@ -42,11 +40,9 @@ public class NodeServiceTest {
 		String node2Name = "Larry";
 		Integer node2ProdTime = Integer.valueOf(8);
 
-		Node testNode = new Node();
-		testNode.setName(node2Name);
-		testNode.setProductionTime(node2ProdTime);
+		Node testNode = new Node(node2Name, node2ProdTime);
 		svc.addNode(testNode);
-		
+
 		Node added = svc.getNodeByName(node2Name);
 		assert(testNode.equals(added));
 		assert(testNode == added); // test that these are exactly the same object

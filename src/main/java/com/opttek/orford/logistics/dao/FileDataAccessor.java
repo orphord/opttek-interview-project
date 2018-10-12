@@ -55,10 +55,8 @@ public class FileDataAccessor {
 				String[] nodeDataArr = getNodeValues(nextLine);
 
 				NodeService nodeService = NodeService.getInstance();
-				Node tempNode = new Node();
-				tempNode.setName(nodeDataArr[0]);
 				Integer prodTime = Integer.valueOf(nodeDataArr[1]);
-				tempNode.setProductionTime(prodTime);
+				Node tempNode = new Node(nodeDataArr[0], prodTime);
 
 				nodeService.addNode(tempNode);
 			}
@@ -106,10 +104,7 @@ public class FileDataAccessor {
 				Node toNode   = nodeService.getNodeByName(toNodeName);
 
 				// Create NodeTransition object and populate it 
-				NodeTransition nodeTrans = new NodeTransition();
-				nodeTrans.setFromNode(fromNode);
-				nodeTrans.setToNode(toNode);
-				nodeTrans.setTransitionCost(transitionCost);
+				NodeTransition nodeTrans = new NodeTransition(fromNode, toNode, transitionCost);
 
 				transitionService.addNodeTransition(nodeTrans);
 			}
