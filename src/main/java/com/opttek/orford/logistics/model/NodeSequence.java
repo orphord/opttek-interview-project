@@ -65,23 +65,41 @@ public class NodeSequence {
 
 
 
+	/**
+	 * Method to swap Nodes and NodeTransitions in this NodeSequence based on an index
+	 * parameter.
+	 * 
+	 * @param _indexToChange
+	 */
 	public void doSwap(Integer _indexToChange) {
 		int idxToSwap = _indexToChange.intValue();
-		
-		// Swap transistion
-		NodeTransition transitionOfInterest = transitionSequence.get(idxToSwap);
-	
-		Node fromNode = transitionOfInterest.getFromNode();
-		Node toNode   = transitionOfInterest.getToNode();
-
-		transitionOfInterest = transitionService.getNodeTransition(toNode, fromNode);
-		transitionSequence.set(idxToSwap, transitionOfInterest);
 
 		// Swap nodes
 		int origFromIdx = idxToSwap;
-		int origToIdx = (idxToSwap + 1) < nodeSequence.size() ? idxToSwap + 1 : idxToSwap;
+		int origToIdx = idxToSwap + 1;
+		if(origFromIdx > -1 && origToIdx < nodeSequence.size()) {
+			Collections.swap(nodeSequence, origFromIdx, origToIdx);
+		}
 
-		Collections.swap(nodeSequence, origFromIdx, origToIdx);
+		// Swap transition referred to by _indextoChange parameter
+		NodeTransition transitionOfInterest = this.swapTransition(idxToSwap);
+		if(transitionOfInterest != null) {
+			transitionSequence.set(idxToSwap, transitionOfInterest);
+		}
+
+		// Swap transition before (if it exists)
+		int prevTransitionIdx = idxToSwap - 1;
+		NodeTransition prevTrans = this.swapTransition(prevTransitionIdx);
+		if( prevTrans != null ) {
+			transitionSequence.set(prevTransitionIdx, prevTrans);
+		}
+
+		// Swap transition after (if it exists)
+		int postTransitionIdx = idxToSwap + 1;
+		NodeTransition postTrans = this.swapTransition(postTransitionIdx);
+		if( postTrans != null ) {
+			transitionSequence.set(postTransitionIdx, postTrans);
+		}
 
 	}
 
@@ -101,6 +119,21 @@ public class NodeSequence {
 		return outSeq;
 	}
 
+	private NodeTransition swapTransition(int _nodeIdxToSwap) {
+		NodeTransition trans = null;
+
+		int fromNodeIdx = _nodeIdxToSwap;
+		int toNodeIdx   = _nodeIdxToSwap + 1;
+		if(fromNodeIdx > -1 && toNodeIdx < nodeSequence.size()) {
+			// Swap transistion
+			Node fromNode = nodeSequence.get(fromNodeIdx);
+			Node toNode   = nodeSequence.get(toNodeIdx);
+
+			trans = transitionService.getNodeTransition(fromNode, toNode);
+		}
+
+		return trans;
+	}
 
 	@Override
 	public String toString() {
@@ -111,12 +144,12 @@ public class NodeSequence {
 			buf.append(",\n");
 		}
 		buf.append("],\n}");
-/*		buf.append("\tnodeTranstions: [\n");
+		buf.append("\tnodeTranstions: [\n");
 		for(NodeTransition nt:transitionSequence) {
 			buf.append(nt.toString());
 			buf.append(",\n");
 		}
-		buf.append("],\n}");*/
+		buf.append("],\n}");
 
 		return buf.toString();
 	}

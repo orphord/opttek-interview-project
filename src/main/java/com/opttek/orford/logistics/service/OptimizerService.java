@@ -11,13 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
 import com.opttek.orford.logistics.model.NodeSequence;
+import com.opttek.orford.logistics.model.SwapResponse;
 
 public class OptimizerService {
 	private Logger log = LoggerFactory.getLogger(OptimizerService.class);
 	
 	public NodeSequence doOptimization(NodeSequence _baselineSeq) {
 		NodeSequence bestSeq = null;
-		int numTasks = 1;//_baselineSeq.getNumTransitions();
+		int numTasks = _baselineSeq.getNumTransitions();
 
 		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
@@ -25,7 +26,7 @@ public class OptimizerService {
 			callableList.add(new SwapAndCompareCallable(_baselineSeq, i));
 		}
 
-		List<Future<NodeSequence>> answers = new ArrayList<Future<NodeSequence>>();
+		List<Future<SwapResponse>> answers = new ArrayList<Future<SwapResponse>>();
 		for(SwapAndCompareCallable task : callableList) {
 			answers.add(executor.submit(task));
 		}

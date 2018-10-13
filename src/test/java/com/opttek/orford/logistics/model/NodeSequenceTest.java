@@ -1,21 +1,13 @@
 package com.opttek.orford.logistics.model;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opttek.orford.logistics.service.NodeTransitionService;
 
 public class NodeSequenceTest {
 	private static final Logger log = LoggerFactory.getLogger(NodeSequenceTest.class);
@@ -31,7 +23,6 @@ public class NodeSequenceTest {
 	private Node b;
 	private Node c;
 
-	@InjectMocks
 	NodeSequence nodeSeq;
 
 	@Before
