@@ -3,7 +3,7 @@ package com.opttek.orford.logistics.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeTransition implements Comparable<NodeTransition>{
+public class NodeTransition {
 	private static final Logger log = LoggerFactory.getLogger(NodeTransition.class);
 	
 	private Node fromNode;
@@ -17,10 +17,6 @@ public class NodeTransition implements Comparable<NodeTransition>{
 	}
 
 
-	@Override
-	public int compareTo(NodeTransition _toCompare) {
-		return this.getTransitionCost().compareTo(_toCompare.getTransitionCost());
-	}
 
 	/**
 	 * @return the fromNode
