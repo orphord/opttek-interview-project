@@ -29,10 +29,10 @@ public class SwapAndCompareCallable implements Callable<SwapResponse> {
 		SwapResponse resp = new SwapResponse();
 
 		operationSequence.doSwap(indexOfInterest);
+		resp.setIndexOfInterest(indexOfInterest);
 		resp.setSwappedSequence(operationSequence);
-		int baselineTransition = baselineTransitionCost.intValue();
-		int swappedTransition  = operationSequence.totalTransitionCost().intValue();
-		Integer netTransitionChange = Integer.valueOf(baselineTransition - swappedTransition);
+		int netTransitionCostChange = baselineTransitionCost.intValue() - operationSequence.totalTransitionCost().intValue();
+		Integer netTransitionChange = Integer.valueOf(netTransitionCostChange);
 		resp.setNetChangeFromBaseLine(netTransitionChange);
 
 		return resp;
