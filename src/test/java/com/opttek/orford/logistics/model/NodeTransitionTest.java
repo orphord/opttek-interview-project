@@ -33,11 +33,6 @@ public class NodeTransitionTest {
 
 
 	@Test
-	public void testCompareTo() {
-		assertTrue( 0 < aToB.compareTo(bToA) );
-	}
-
-	@Test
 	public void testGetFromNode() {
 		assertEquals("A to B fromNode should be equal to A: ", a, aToB.getFromNode());
 	}
