@@ -1,16 +1,10 @@
 package com.opttek.orford.logistics;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
 import com.opttek.orford.logistics.dao.FileDataAccessor;
 import com.opttek.orford.logistics.exception.LogisticsException;
 import com.opttek.orford.logistics.model.NodeSequence;

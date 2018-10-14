@@ -25,7 +25,7 @@ public class OptimizerService {
 
 		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
-		for(int i = 0; i < numTasks; i++) {
+		for(int i = 0; i <= numTasks; i++) {
 			callableList.add(new SwapAndCompareCallable(_baselineSeq, i));
 		}
 
