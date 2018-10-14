@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
 import com.opttek.orford.logistics.dao.FileDataAccessor;
+import com.opttek.orford.logistics.exception.LogisticsException;
 import com.opttek.orford.logistics.model.NodeSequence;
 import com.opttek.orford.logistics.service.OptimizerService;
 
@@ -30,7 +31,13 @@ public class LogisticsController {
 
 		this.loadData();
 		OptimizerService optService = new OptimizerService();
-		NodeSequence optimal = optService.doOptimization(baselineSequence);
+		try {
+			NodeSequence optimal = optService.doOptimization(baselineSequence);
+			log.info("The OPTIMAL NodeSequence is: " + optimal.toString());
+		} catch(LogisticsException ex) {
+			log.error("A LogisticsException was thrown with the following stack trace: ", ex);
+			ex.printStackTrace();
+		}
 
 	}
 
