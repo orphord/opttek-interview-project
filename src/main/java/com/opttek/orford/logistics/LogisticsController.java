@@ -27,7 +27,9 @@ public class LogisticsController {
 		OptimizerService optService = new OptimizerService();
 		try {
 			NodeSequence optimal = optService.doOptimization(baselineSequence);
+			log.info("********************");
 			log.info("The OPTIMAL NodeSequence is: " + optimal.toString());
+			log.info("********************");
 		} catch(LogisticsException ex) {
 			log.error("A LogisticsException was thrown with the following stack trace: ", ex);
 			ex.printStackTrace();

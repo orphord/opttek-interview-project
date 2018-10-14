@@ -20,36 +20,52 @@ public class OptimizerService {
 	private Logger log = LoggerFactory.getLogger(OptimizerService.class);
 	
 	public NodeSequence doOptimization(NodeSequence _baselineSeq) throws LogisticsException {
-		NodeSequence bestSeq = null;
+		// Initialize bestSeq to the baseline (to start the best *is* the baseline)
+		NodeSequence bestSeq = _baselineSeq;
 		int numTasks = _baselineSeq.getNumTransitions();
+//TESTCODE-------------
+log.info("=============================");
+log.info("BASELINESEQ: ");
+log.info(_baselineSeq.toString());
+//---------------------
+		for(int i = 0; i < 3; i++) {
+			ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 
-		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
-		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
-		for(int i = 0; i <= numTasks; i++) {
-			callableList.add(new SwapAndCompareCallable(_baselineSeq, i));
-		}
-
-		List<Future<SwapResponse>> answers = new ArrayList<Future<SwapResponse>>();
-		for(SwapAndCompareCallable task : callableList) {
-			answers.add(executor.submit(task));
-		}
-
-		// End executor
-		executor.shutdown();
-
-		List<SwapResponse> respsFromThisRound = new ArrayList<SwapResponse>(answers.size());
-		for(Future<SwapResponse> futResp : answers) {
-			try {
-				respsFromThisRound.add(futResp.get());
-			} catch (InterruptedException | ExecutionException ex) {
-				throw new LogisticsException(ex);
+			// Loop numTasks and create callable objects each with a different index to test
+			List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
+			for(int j = 0; j <= numTasks; j++) {
+				callableList.add(new SwapAndCompareCallable(bestSeq, j));
 			}
+
+			// Create an array list of futures to be populated by just created callables and assign to answers list
+			List<Future<SwapResponse>> answers = new ArrayList<Future<SwapResponse>>();
+			for(SwapAndCompareCallable task : callableList) {
+				answers.add(executor.submit(task));
+			}
+	
+			// End executor
+			executor.shutdown();
+
+			// Loop thru answers list of future objects and get actual responses
+			List<SwapResponse> respsFromThisRound = new ArrayList<SwapResponse>(answers.size());
+			for(Future<SwapResponse> futResp : answers) {
+				try {
+					respsFromThisRound.add(futResp.get());
+				} catch (InterruptedException | ExecutionException ex) {
+					throw new LogisticsException(ex);
+				}
+			}
+
+			// Sort responses in reverse order so largest net savings from baseline is at the top 
+			Collections.sort(respsFromThisRound, Collections.reverseOrder());
+			bestSeq = respsFromThisRound.get(0).getSwappedSequence();
+//TESTCODE----------------
+log.info("++++++++++++++++++++++");
+log.info("BEST SEQUENCE: " + bestSeq.toString());
+//------------------------
 		}
 
-		Collections.sort(respsFromThisRound);
-
-
-		return respsFromThisRound.get(0).getSwappedSequence();
+		return bestSeq;
 		
 	}
 }
