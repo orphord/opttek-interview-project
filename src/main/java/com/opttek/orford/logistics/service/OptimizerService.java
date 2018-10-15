@@ -28,7 +28,8 @@ log.info("=============================");
 log.info("BASELINESEQ: ");
 log.info(_baselineSeq.toString());
 //---------------------
-		for(int i = 0; i < 3; i++) {
+		boolean stillOptimizeable = true;
+		while(stillOptimizeable) {
 			ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 
 			// Loop numTasks and create callable objects each with a different index to test
@@ -58,7 +59,22 @@ log.info(_baselineSeq.toString());
 
 			// Sort responses in reverse order so largest net savings from baseline is at the top 
 			Collections.sort(respsFromThisRound, Collections.reverseOrder());
-			bestSeq = respsFromThisRound.get(0).getSwappedSequence();
+			
+			// Check if the best (zero-th) resp has a better than zero net change
+			if(respsFromThisRound.get(0).getNetChangeFromBaseLine().intValue() > 0) {
+				bestSeq = respsFromThisRound.get(0).getSwappedSequence();
+			} else {
+				stillOptimizeable = false; 
+			}
+//TESTCODE---------
+log.info("#########################");
+for(SwapResponse resp : respsFromThisRound) {
+	log.info("Net savings over baseline: " + resp.getNetChangeFromBaseLine());
+	log.info("Which index was that??: " + resp.getIndexOfInterest());
+}
+log.info("#########################");
+//-----------------
+			
 //TESTCODE----------------
 log.info("++++++++++++++++++++++");
 log.info("BEST SEQUENCE: " + bestSeq.toString());
