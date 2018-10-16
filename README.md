@@ -13,19 +13,29 @@ The program will have the matrix of transition costs between each product line, 
 
 ### Instructions to install and run
 1. In a terminal window navigate to the directory to which you would like to clone the git repository type `git clone https://github.com/orphord/opttek-interview-project.git` (<--or copy-paste this text).
-  * This will have created a directory called gap-rule-test/, navigate there (ie. cd gap-rule-test/) (please forgive that I added "test" at the end of the name, I'm thinking of this as a test, so I named the repo that.
+  * This will have created a directory called opttek-interview-project/, navigate there (ie. cd opttek-interview-project/)
 2. Type `mvn clean install`, the build will start and the set of tests will run, I would expect no failures, **If there is a failure, please call or get in touch, that would be surprising and I may need to check out what's up**.
-3. Type `java -jar target/gap-rule-test-0.0.1-SNAPSHOT.jar`.  This will run the process with the `test-case.json` provided with the instructions.
-  * Note: I did add the feature to allow a user to specify a json file with the command line parameter --file.loc, so on my system for example I would enter `java -jar target/gap-rule-test-0.0.1-SNAPSHOT.jar --file.loc=/home/orphord/dir/to/another-file.json` and that file would get picked up and processed.
-4. The essential output is to the console as log4j messages.  The important information is between "======================..." and "=================..."
+3. Type `java -jar target/opttek-logistics-project.jar`.  This will run the process with the sequence (B, G, E, A, C, I, J, D, H, F) provided with the instructions.
+  * Note: I did add the feature to allow a user to specify a sequence from the command line.  If you have a sequence you'd like to try type `java -jar target/opttek-logistics-project.jar A,B,C` (Note: no spaces) and the sequence "A,B,C" will be optimized.
+4. The essential output is to the console as log4j messages.  The important information is between "********************" and "********************"
 
 
 ## Approach
 I decided to create a good old Java application to do this work.  I considered using Spring-MVC and there were some advantages to that, but I thought that the approach that I did end up taking was simple enough to not require the extra weight of Spring.
 
-My first observation for this problem was that since the production times of each product doesn't change as the sequence order changes, optimizing the total production time for the set of products was to find the sequence which would minimize transition costs.  The process is as follows:
-* Beginning with the initial sequence (I call this the "baseline" sequence), invoke a thread for each potential transition swap and calculate the total transition time of the new sequence.
+My first observation for this problem was that since the production times of each product doesn't change as the sequence order changes, so optimizing the total production time for the set of products was to find the sequence which would minimize transition costs.  The process is as follows:
+* Beginning with the initial sequence (I call this the "baseline" sequence), the `OptimizerService.optimize()` method loops through the sequence n-1 times where n is the number of Node objects in the sequence, this is equivalent to the number of transitions between Nodes in the exercise.
+* The sequence -- modeled as a `NodeSequence` object -- is passed as a parameter to the `SwapAndCompare.checkOptimal()` method.
+* The `checkOptimal()` method swaps the relevant `Node` objects and calculates the total transition time
+  * If the total transition time is less than (i.e. an improvement on) the baseline sequence's total transition time **then** recursively call `OptimizerService.optimize()` on the swapped sequence.
+  * If the total transition time is greater or equal to the baseline sequence's total transition time return the baseline sequence as the optimal sequence.  In this way the optimal sequence will be reached.
 * Sort the resulting sequences based on how big an improvement over the baseline sequence and make the sequence which had the greatest effect on total transition time the new baseline.
-* Repeat this process until the sorted sequences has a zero (or worse) effect on the overall transition time relative to the baseline.
-* At this point the baseline sequence is the optimized sequence and will be returned to the user and its overall production time (including both production and transitions).
+* At the top `OptimizerService` a `Set` of sequences -- contained within a `SwapResponse` object -- will be returned and sorted by total transition time, the one at the top of the list is the optimal sequence.
+
+## Additional Notes
+The original implementation I created for this had two issues:
+1. It found only a local minimum as it was only recursing down the path with the biggest net savings in total transfer time.  I fixed this issue by going down all paths that had a net gain (as opposed to no change or net loss) recursively.
+2. I attempted to do a multi-threaded solution where each transition was tested in parallel and this worked well (and was more performant), but for certain cases my system (and presumably many systems) ran out of threads and I felt this was a bad look for an interview :-).  I took this performance feature out, but I do know how to do that for future reference.
+
+Thanks for this exercise, it was fun and challenging.
 
