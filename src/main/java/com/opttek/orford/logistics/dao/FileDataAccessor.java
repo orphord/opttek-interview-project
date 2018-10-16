@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -128,28 +129,37 @@ public class FileDataAccessor {
 	 * 
 	 * IMPORTANT NOTE: This function depends on the nodes referenced herein having already been created as well as the NodeTransitionMatrix 
 	 */
-	public NodeSequence getInitialSequenceData() {
+	public NodeSequence getInitialSequenceData(String _commaDelimitedSequence) {
 		log.info("getSequenceData() function called.");
 		NodeSequence initialSequence = new NodeSequence();
 		NodeService nodeService = NodeService.getInstance();
 
-		try {
-			InputStream dataFileStream = getClass().getResourceAsStream(SEQUENCE_DATA_FILE_NAME);
-
-			BufferedReader buf = new BufferedReader(new InputStreamReader(dataFileStream));
-			String nextLine;
-			while( (nextLine = buf.readLine()) != null) {
-				Node tempNode = nodeService.getNodeByName(nextLine);
+		// Two cases, if no sequence was passed on command line, get sequence from file
+		if(_commaDelimitedSequence == null) {
+			try {
+				InputStream dataFileStream = getClass().getResourceAsStream(SEQUENCE_DATA_FILE_NAME);
+	
+				BufferedReader buf = new BufferedReader(new InputStreamReader(dataFileStream));
+				String nextLine;
+				while( (nextLine = buf.readLine()) != null) {
+					Node tempNode = nodeService.getNodeByName(nextLine);
+					initialSequence.addNode(tempNode);
+				}
+			} catch (FileNotFoundException ex) {
+				log.error("File " + SEQUENCE_DATA_FILE_NAME + " not found.");
+				ex.printStackTrace();
+			} catch (IOException ex) {
+				log.error("Error getting next line from file.");
+				ex.printStackTrace();
+			}
+		} else { // 2. Sequence was passed by user
+			List<String> nodeNamesPassed = Arrays.asList(_commaDelimitedSequence.split(","));
+			for(String nodeName : nodeNamesPassed) {
+				Node tempNode = nodeService.getNodeByName(nodeName);
 				initialSequence.addNode(tempNode);
 			}
-		} catch (FileNotFoundException ex) {
-			log.error("File " + SEQUENCE_DATA_FILE_NAME + " not found.");
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			log.error("Error getting next line from file.");
-			ex.printStackTrace();
 		}
-		
+
 		return initialSequence;
 
 	}
