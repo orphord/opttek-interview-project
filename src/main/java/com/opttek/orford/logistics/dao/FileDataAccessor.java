@@ -45,7 +45,7 @@ public class FileDataAccessor {
 	 * String and the production cost is an integer value.
 	 */
 	public void getNodeData() {
-		log.info("getNodeData() function called.");
+		log.debug("getNodeData() function called.");
 
 		try {
 			InputStream dataFileStream = getClass().getResourceAsStream(NODE_DATA_FILE_NAME);
@@ -83,7 +83,7 @@ public class FileDataAccessor {
 	 * method above. 
 	 */
 	public void getTransitionMatrix() {
-		log.info("getTransitionMatrix() function called.");
+		log.debug("getTransitionMatrix() function called.");
 
 		try {
 			InputStream dataFileStream = getClass().getResourceAsStream(TRANSITION_DATA_FILE_NAME);
@@ -130,7 +130,7 @@ public class FileDataAccessor {
 	 * IMPORTANT NOTE: This function depends on the nodes referenced herein having already been created as well as the NodeTransitionMatrix 
 	 */
 	public NodeSequence getInitialSequenceData(String _commaDelimitedSequence) {
-		log.info("getSequenceData() function called.");
+		log.debug("getSequenceData() function called.");
 		NodeSequence initialSequence = new NodeSequence();
 		NodeService nodeService = NodeService.getInstance();
 

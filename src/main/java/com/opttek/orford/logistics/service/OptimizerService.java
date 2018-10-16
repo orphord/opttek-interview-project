@@ -22,14 +22,10 @@ public class OptimizerService {
 	private Logger log = LoggerFactory.getLogger(OptimizerService.class);
 	
 	public SwapResponse optimize(NodeSequence _baselineSeq) throws LogisticsException {
+		log.debug("optimize function called on Sequence: " + _baselineSeq.toString());
 		// Initialize bestSeq to the baseline (to start the best *is* the baseline)
 		NodeSequence bestSeq = _baselineSeq;
 		int numTasks = _baselineSeq.getNumTransitions();
-//TESTCODE-------------
-log.info(java.lang.Thread.currentThread().getName() + ": =============================");
-log.info(java.lang.Thread.currentThread().getName() + ": BASELINESEQ numTransitions: " + numTasks);
-log.info(java.lang.Thread.currentThread().getName() + _baselineSeq.toString());
-//---------------------
 
 		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
 
@@ -61,16 +57,6 @@ log.info(java.lang.Thread.currentThread().getName() + _baselineSeq.toString());
 
 		// Sort responses in reverse order so largest net savings from baseline is at the top 
 		Collections.sort(respList, Collections.reverseOrder());
-
-
-//TESTCODE---------
-log.info(java.lang.Thread.currentThread().getName() + ": #########################");
-for(SwapResponse resp : respList) {
-	log.info(java.lang.Thread.currentThread().getName() + ": Sequence: " + resp.getSwappedSequence().toString());
-	log.info(java.lang.Thread.currentThread().getName() + ": Net savings over baseline: " + resp.getNetChangeFromBaseLine());
-}
-log.info(java.lang.Thread.currentThread().getName() + ": *************************");
-//-----------------
 
 		return respList.get(0);
 

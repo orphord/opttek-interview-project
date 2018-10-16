@@ -22,7 +22,7 @@ public class FileDataAccessorTest {
 
 	@Test
 	public void testGetNodeData() {
-		log.info("Test Node data retrieval.");
+		log.debug("Test Node data retrieval.");
 		fileAccessor.getNodeData();
 		NodeService nodeService = NodeService.getInstance();
 		assertTrue(nodeService.getNodeByName("A") != null);
@@ -31,7 +31,7 @@ public class FileDataAccessorTest {
 
 	@Test
 	public void testGetTransitionMatrix() {
-		log.info("Test Node Transition data retrieval.");
+		log.debug("Test Node Transition data retrieval.");
 		fileAccessor.getTransitionMatrix();
 		NodeTransitionMatrix txnService = NodeTransitionMatrix.getInstance();
 		assertTrue(txnService.getNodeTransitionByFromNameAndToName("A", "B") != null);

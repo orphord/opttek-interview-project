@@ -46,7 +46,7 @@ public class NodeTransitionTest {
 
 	@Test
 	public void testGetTransitionCost() {
-		assertEquals("A to B transition cost should be " + this.initialAtoBTransitionCost, this.initialAtoBTransitionCost, aToB.getTransitionCost());
+		assertEquals("A to B transition cost should be " + this.initialAtoBTransitionCost, this.initialAtoBTransitionCost, aToB.getTransitionTime());
 	}
 
 

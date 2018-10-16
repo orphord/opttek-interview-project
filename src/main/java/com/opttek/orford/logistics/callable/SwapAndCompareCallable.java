@@ -30,8 +30,8 @@ public class SwapAndCompareCallable implements Callable<SwapResponse> {
 
 		operationSequence.doSwap(indexOfInterest);
 
-		Integer swappedTransitionCost = operationSequence.totalTransitionCost();
-		Integer baselineTransitionCost = baselineSequence.totalTransitionCost();
+		Integer swappedTransitionCost = operationSequence.totalTransitionTime();
+		Integer baselineTransitionCost = baselineSequence.totalTransitionTime();
 		int netTransitionCostChange = baselineTransitionCost.intValue() - swappedTransitionCost.intValue();
 
 		//Now, if swap was a net positive (ie. better than break even) recursively call OptimizerService.doOptimization
@@ -39,7 +39,7 @@ public class SwapAndCompareCallable implements Callable<SwapResponse> {
 			OptimizerService opService = new OptimizerService();
 			resp = opService.optimize(operationSequence);
 			// Need to set transition cost for response to be relative to the baseline of this request
-			Integer respSeqTransitionCost = resp.getSwappedSequence().totalTransitionCost();
+			Integer respSeqTransitionCost = resp.getSwappedSequence().totalTransitionTime();
 			resp.setNetChangeFromBaseLine(Integer.valueOf(baselineTransitionCost - respSeqTransitionCost.intValue()));
 		} else {
 			resp = new SwapResponse();
