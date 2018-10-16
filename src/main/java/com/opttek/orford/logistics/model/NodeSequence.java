@@ -54,10 +54,33 @@ public class NodeSequence {
 		return transitionSequence.size();
 	}
 
-	public Integer totalTransitionCost() {
+
+	public Integer totalTime() {
+		int totalTime = this.totalProductionTime().intValue() + this.totalTransitionTime().intValue();
+		return Integer.valueOf(totalTime);
+	}
+
+	/**
+	 * Method to return the total cost of production of Nodes in this NodeSequence.
+	 * @return Integer representing the sum of production costs in this NodeSequence.
+	 */
+	public Integer totalProductionTime() {
+		int totalProdCost = 0;
+		for(Node node : this.nodeSequence) {
+			totalProdCost += node.getProductionTime();
+		}
+
+		return Integer.valueOf(totalProdCost);
+	}
+
+	/**
+	 * Method to return the total cost of the transitions in this NodeSequence.
+	 * @return Integer representing the sum of transition costs in this NodeSequence.
+	 */
+	public Integer totalTransitionTime() {
 		int totalSeqCost = 0;
 		for(NodeTransition trans : this.transitionSequence) {
-			totalSeqCost += trans.getTransitionCost().intValue();
+			totalSeqCost += trans.getTransitionTime().intValue();
 		}
 
 		return Integer.valueOf(totalSeqCost);
@@ -190,19 +213,8 @@ public class NodeSequence {
 			buf.append(node.getName());
 		}
 		buf.append("],\n");
-		buf.append("totalTransitionCost: " + this.totalTransitionCost() + "\n}");
-//		buf.append("\tnodes: [\n");
-//		for(Node node: nodeSequence) {
-//			buf.append(node.toString());
-//			buf.append(",\n");
-//		}
-//		buf.append("],\n}");
-//		buf.append("\tnodeTranstions: [\n");
-//		for(NodeTransition nt:transitionSequence) {
-//			buf.append(nt.toString());
-//			buf.append(",\n");
-//		}
-//		buf.append("],\n}");
+		buf.append("totalTime: " + this.totalTime() + "\n}");
+
 
 		return buf.toString();
 	}

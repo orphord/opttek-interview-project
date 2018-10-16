@@ -27,20 +27,23 @@ public class LogisticsController {
 
 	}
 
-	public void doOptimization(String _commaSeq) throws InterruptedException, ExecutionException {
+	public SwapResponse doOptimization(String _commaSeq) throws InterruptedException, ExecutionException {
 		log.debug("Optimizing sequence: " + _commaSeq);
+		
+		SwapResponse finalResponse = null;
 		this.loadData(_commaSeq);
 		OptimizerService optService = new OptimizerService();
 		try {
-			SwapResponse optimal = optService.optimize(baselineSequence);
+			finalResponse = optService.optimize(baselineSequence);
 			log.info("********************");
-			log.info("The OPTIMAL NodeSequence is: " + optimal.getSwappedSequence().toString());
+			log.info("The OPTIMAL NodeSequence is: " + finalResponse.getSwappedSequence().toString());
 			log.info("********************");
 		} catch(LogisticsException ex) {
 			log.error("A LogisticsException was thrown with the following stack trace: ", ex);
 			ex.printStackTrace();
 		}
 
+		return finalResponse;
 	}
 
 	private void loadData(String _commaDelimitedSequence) {

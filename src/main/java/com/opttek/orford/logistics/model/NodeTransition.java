@@ -8,12 +8,12 @@ public class NodeTransition {
 	
 	private Node fromNode;
 	private Node toNode;
-	private Integer transitionCost;
+	private Integer transitionTime;
 
-	public NodeTransition(Node _from, Node _to, Integer _transCost) {
+	public NodeTransition(Node _from, Node _to, Integer _transTime) {
 		fromNode = _from;
 		toNode = _to;
-		transitionCost = _transCost;
+		transitionTime = _transTime;
 	}
 
 
@@ -37,8 +37,8 @@ public class NodeTransition {
 	/**
 	 * @return the transitionCost
 	 */
-	public Integer getTransitionCost() {
-		return this.transitionCost;
+	public Integer getTransitionTime() {
+		return this.transitionTime;
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class NodeTransition {
 		int result = 1;
 		result = prime * result + fromNode.hashCode();
 		result = prime * result + toNode.hashCode();
-		result = prime * result + transitionCost.hashCode();
+		result = prime * result + transitionTime.hashCode();
 
 		return result;
 	}
@@ -72,7 +72,7 @@ public class NodeTransition {
 		NodeTransition c = (NodeTransition) o;
 
 		// Compare the data members and return accordingly
-		return this.getToNode().equals(c.getToNode()) && this.getTransitionCost().equals(c.getTransitionCost());
+		return this.getToNode().equals(c.getToNode()) && this.getTransitionTime().equals(c.getTransitionTime());
 
 	}
 
@@ -81,7 +81,7 @@ public class NodeTransition {
 		StringBuffer buf = new StringBuffer("NodeTransition {\n");
 		buf.append("\tFromNode: " + this.getFromNode().toString() + ",\n");
 		buf.append("\ttoNode: " + this.getToNode().toString() + ",\n");
-		buf.append("\ttransitionCost: " + this.getTransitionCost() + "\n");
+		buf.append("\ttransitionCost: " + this.getTransitionTime() + "\n");
 		buf.append("}\n");
 
 		return buf.toString();
