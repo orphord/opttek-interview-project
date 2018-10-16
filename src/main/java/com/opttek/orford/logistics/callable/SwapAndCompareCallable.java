@@ -7,36 +7,47 @@ import org.slf4j.LoggerFactory;
 
 import com.opttek.orford.logistics.model.NodeSequence;
 import com.opttek.orford.logistics.model.SwapResponse;
-import com.opttek.orford.logistics.service.NodeTransitionService;
+import com.opttek.orford.logistics.service.OptimizerService;
 
 public class SwapAndCompareCallable implements Callable<SwapResponse> {
 	private static final Logger log = LoggerFactory.getLogger(SwapAndCompareCallable.class);
-	private NodeTransitionService transitionService = NodeTransitionService.getInstance();
-	private Integer baselineTransitionCost;
+
 	private NodeSequence operationSequence;
+	private NodeSequence baselineSequence;
 	private Integer indexOfInterest;
 
 
 	public SwapAndCompareCallable(NodeSequence _seq, Integer _indexToChange) {
-		log.info("Constructing SwapAndCompareCallable for index: " + _indexToChange);
-		baselineTransitionCost = _seq.totalTransitionCost();
-		operationSequence = _seq.cloneNodeSequence();
+		log.debug("Constructing SwapAndCompareCallable for index: " + _indexToChange);
+		baselineSequence = _seq;
+		operationSequence = baselineSequence.cloneNodeSequence();
 		indexOfInterest = _indexToChange;
 
 	}
 
 	public SwapResponse call() throws Exception {
-		SwapResponse resp = new SwapResponse();
+		SwapResponse resp = null;
 
 		operationSequence.doSwap(indexOfInterest);
-		resp.setIndexOfInterest(indexOfInterest);
-		resp.setSwappedSequence(operationSequence);
-		int netTransitionCostChange = baselineTransitionCost.intValue() - operationSequence.totalTransitionCost().intValue();
-		Integer netTransitionChange = Integer.valueOf(netTransitionCostChange);
-		resp.setNetChangeFromBaseLine(netTransitionChange);
+
+		Integer swappedTransitionCost = operationSequence.totalTransitionCost();
+		Integer baselineTransitionCost = baselineSequence.totalTransitionCost();
+		int netTransitionCostChange = baselineTransitionCost.intValue() - swappedTransitionCost.intValue();
+
+		//Now, if swap was a net positive (ie. better than break even) recursively call OptimizerService.doOptimization
+		if(netTransitionCostChange > 0) {
+			OptimizerService opService = new OptimizerService();
+			resp = opService.optimize(operationSequence);
+			// Need to set transition cost for response to be relative to the baseline of this request
+			Integer respSeqTransitionCost = resp.getSwappedSequence().totalTransitionCost();
+			resp.setNetChangeFromBaseLine(Integer.valueOf(baselineTransitionCost - respSeqTransitionCost.intValue()));
+		} else {
+			resp = new SwapResponse();
+			resp.setSwappedSequence(baselineSequence);
+			resp.setNetChangeFromBaseLine(Integer.valueOf(0));
+		}
 
 		return resp;
-
 	}
 
 }

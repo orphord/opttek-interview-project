@@ -136,20 +136,73 @@ public class NodeSequence {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		for(Node node : this.nodeSequence) {
+			result = prime * result + node.hashCode();
+		}
+
+		for(NodeTransition nt : this.transitionSequence) {
+			result = prime * result + nt.hashCode();
+		}
+
+		
+		return result;
+	}
+
+	
+	@Override
+	public boolean equals(Object o) {
+		// If the object is compared with itself then return true
+		if (o == this) {
+			return true;
+		}
+
+		/*
+		 * Check if o is an instance of Node or not "null instanceof [type]" also
+		 * returns false
+		 */
+		if (!(o instanceof NodeSequence)) {
+			return false;
+		}
+
+		// typecast o to Complex so that we can compare data members
+		NodeSequence c = (NodeSequence) o;
+
+		// Compare the data members and return accordingly
+		boolean equal = true;
+		for(int i = 0; i < this.nodeSequence.size(); i++) {
+			equal = (this.nodeSequence.get(i).equals(c.nodeSequence.get(i)));
+			if(!equal)
+				break;
+		}
+		return equal;
+
+	}
+
+
+	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer("NodeSequence {\n");
-		buf.append("\tnodes: [\n");
-		for(Node node: nodeSequence) {
-			buf.append(node.toString());
-			buf.append(",\n");
+		StringBuffer buf = new StringBuffer("\nNodeSequence {\n");
+		buf.append("[");
+		for(Node node : nodeSequence) {
+			buf.append(node.getName());
 		}
-		buf.append("],\n}");
-		buf.append("\tnodeTranstions: [\n");
-		for(NodeTransition nt:transitionSequence) {
-			buf.append(nt.toString());
-			buf.append(",\n");
-		}
-		buf.append("],\n}");
+		buf.append("],\n");
+		buf.append("totalTransitionCost: " + this.totalTransitionCost() + "\n}");
+//		buf.append("\tnodes: [\n");
+//		for(Node node: nodeSequence) {
+//			buf.append(node.toString());
+//			buf.append(",\n");
+//		}
+//		buf.append("],\n}");
+//		buf.append("\tnodeTranstions: [\n");
+//		for(NodeTransition nt:transitionSequence) {
+//			buf.append(nt.toString());
+//			buf.append(",\n");
+//		}
+//		buf.append("],\n}");
 
 		return buf.toString();
 	}

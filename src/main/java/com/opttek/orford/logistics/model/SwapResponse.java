@@ -9,8 +9,6 @@ public class SwapResponse implements Comparable<SwapResponse> {
 	
 	private NodeSequence swappedSequence;
 	private Integer netChangeFromBaseLine;
-	private Integer indexOfInterest;
-
 
 	/**
 	 * @return the swappedSequence
@@ -42,24 +40,42 @@ public class SwapResponse implements Comparable<SwapResponse> {
 	}
 
 
-	/**
-	 * @return the indexOfInterest
-	 */
-	public Integer getIndexOfInterest() {
-		return indexOfInterest;
-	}
-
-	/**
-	 * @param _indexOfInterest the indexOfInterest to set
-	 */
-	public void setIndexOfInterest(Integer _indexOfInterest) {
-		this.indexOfInterest = _indexOfInterest;
-	}
-
-
 	@Override
 	public int compareTo(SwapResponse _toCompare) {
 		return this.netChangeFromBaseLine.compareTo(_toCompare.getNetChangeFromBaseLine());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.getSwappedSequence().hashCode();
+		result = prime * result + this.getNetChangeFromBaseLine().hashCode();
+		return result;
+	}
+
+	
+	@Override
+	public boolean equals(Object o) {
+		// If the object is compared with itself then return true
+		if (o == this) {
+			return true;
+		}
+
+		/*
+		 * Check if o is an instance of Node or not "null instanceof [type]" also
+		 * returns false
+		 */
+		if (!(o instanceof SwapResponse)) {
+			return false;
+		}
+
+		// typecast o to Complex so that we can compare data members
+		SwapResponse c = (SwapResponse) o;
+
+		// Compare the data members and return accordingly
+		return this.getSwappedSequence().equals(c.getSwappedSequence()) && this.getNetChangeFromBaseLine().equals(c.getNetChangeFromBaseLine());
+
 	}
 
 	
