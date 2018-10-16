@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.opttek.orford.logistics.dao.FileDataAccessor;
 import com.opttek.orford.logistics.exception.LogisticsException;
 import com.opttek.orford.logistics.model.NodeSequence;
+import com.opttek.orford.logistics.model.SwapResponse;
 import com.opttek.orford.logistics.service.OptimizerService;
 
 
@@ -17,18 +18,23 @@ public class LogisticsController {
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		LogisticsController controller = new LogisticsController();
-		controller.doOptimization();
+		String commaDelimitedSequence = null;
+		if(args.length >  0) {
+			commaDelimitedSequence = args[0];
+		}
+
+		controller.doOptimization(commaDelimitedSequence);
 
 	}
 
-	private void doOptimization() throws InterruptedException, ExecutionException {
-
-		this.loadData();
+	public void doOptimization(String _commaSeq) throws InterruptedException, ExecutionException {
+		log.debug("Optimizing sequence: " + _commaSeq);
+		this.loadData(_commaSeq);
 		OptimizerService optService = new OptimizerService();
 		try {
-			NodeSequence optimal = optService.doOptimization(baselineSequence);
+			SwapResponse optimal = optService.optimize(baselineSequence);
 			log.info("********************");
-			log.info("The OPTIMAL NodeSequence is: " + optimal.toString());
+			log.info("The OPTIMAL NodeSequence is: " + optimal.getSwappedSequence().toString());
 			log.info("********************");
 		} catch(LogisticsException ex) {
 			log.error("A LogisticsException was thrown with the following stack trace: ", ex);
@@ -37,11 +43,11 @@ public class LogisticsController {
 
 	}
 
-	private void loadData() {
+	private void loadData(String _commaDelimitedSequence) {
 		FileDataAccessor dataAccessor = FileDataAccessor.getInstance();
 		dataAccessor.getNodeData();
 		dataAccessor.getTransitionMatrix();
-		baselineSequence = dataAccessor.getInitialSequenceData();
+		baselineSequence = dataAccessor.getInitialSequenceData(_commaDelimitedSequence);
 		
 	}
 	
