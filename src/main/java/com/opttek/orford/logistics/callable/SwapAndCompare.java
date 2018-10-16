@@ -5,28 +5,21 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opttek.orford.logistics.exception.LogisticsException;
 import com.opttek.orford.logistics.model.NodeSequence;
 import com.opttek.orford.logistics.model.SwapResponse;
 import com.opttek.orford.logistics.service.OptimizerService;
 
-public class SwapAndCompareCallable implements Callable<SwapResponse> {
-	private static final Logger log = LoggerFactory.getLogger(SwapAndCompareCallable.class);
+public class SwapAndCompare {
+	private static final Logger log = LoggerFactory.getLogger(SwapAndCompare.class);
 
-	private NodeSequence operationSequence;
-	private NodeSequence baselineSequence;
-	private Integer indexOfInterest;
+	public SwapAndCompare() {}
 
-
-	public SwapAndCompareCallable(NodeSequence _seq, Integer _indexToChange) {
-		log.debug("Constructing SwapAndCompareCallable for index: " + _indexToChange);
-		baselineSequence = _seq;
-		operationSequence = baselineSequence.cloneNodeSequence();
-		indexOfInterest = _indexToChange;
-
-	}
-
-	public SwapResponse call() throws Exception {
+	public SwapResponse checkOptimal(NodeSequence _seq, Integer _indexToChange) throws LogisticsException {
 		SwapResponse resp = null;
+		NodeSequence baselineSequence = _seq;
+		NodeSequence operationSequence = baselineSequence.cloneNodeSequence();
+		Integer indexOfInterest = _indexToChange;
 
 		operationSequence.doSwap(indexOfInterest);
 

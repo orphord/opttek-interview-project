@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.opttek.orford.logistics.callable.SwapAndCompareCallable;
+import com.opttek.orford.logistics.callable.SwapAndCompare;
 import com.opttek.orford.logistics.exception.LogisticsException;
 import com.opttek.orford.logistics.model.NodeSequence;
 import com.opttek.orford.logistics.model.SwapResponse;
@@ -27,32 +27,15 @@ public class OptimizerService {
 		NodeSequence bestSeq = _baselineSeq;
 		int numTasks = _baselineSeq.getNumTransitions();
 
-		ExecutorService executor = Executors.newFixedThreadPool(numTasks);
-
-		// Loop numTasks and create callable objects each with a different index to test
-		List<SwapAndCompareCallable> callableList= new ArrayList<SwapAndCompareCallable>(numTasks);
-		for(int j = 0; j < numTasks; j++) {
-			callableList.add(new SwapAndCompareCallable(bestSeq, j));
-		}
-
-		// Create an array list of futures to be populated by just created callables and assign to answers list
-		List<Future<SwapResponse>> answers = new ArrayList<Future<SwapResponse>>();
-		for(SwapAndCompareCallable task : callableList) {
-			answers.add(executor.submit(task));
-		}
-
-		// End executor
-		executor.shutdown();
-
-		// Loop thru answers list of future objects and get actual responses
+		// Loop numTasks times and make recursive call to find optimal sequence for each path
 		Set<SwapResponse> respSetFromThisRound = new HashSet<SwapResponse>();
-		for(Future<SwapResponse> futResp : answers) {
-			try {
-				respSetFromThisRound.add(futResp.get());
-			} catch (InterruptedException | ExecutionException ex) {
-				throw new LogisticsException(ex);
-			}
+		for(int j = 0; j < numTasks; j++) {
+			SwapAndCompare operator = new SwapAndCompare();
+			respSetFromThisRound.add(operator.checkOptimal(bestSeq, j));
+
 		}
+
+		// 
 		List<SwapResponse> respList = new ArrayList<SwapResponse>(respSetFromThisRound);
 
 		// Sort responses in reverse order so largest net savings from baseline is at the top 
