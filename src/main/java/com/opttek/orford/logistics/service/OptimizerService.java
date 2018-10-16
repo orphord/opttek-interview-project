@@ -35,7 +35,7 @@ public class OptimizerService {
 
 		}
 
-		// 
+		// Create List from Set of SwapResponse objects
 		List<SwapResponse> respList = new ArrayList<SwapResponse>(respSetFromThisRound);
 
 		// Sort responses in reverse order so largest net savings from baseline is at the top 
